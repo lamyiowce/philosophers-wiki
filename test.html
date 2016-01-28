@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script data-require="d3@*" data-semver="3.4.6" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js"></script>
+    <style>
+    
+      .punkt {
+        stroke: black;
+        stroke-width: 1px;
+      }
+      
+    </style>
+  </head>
+
+  <body>
+    <svg width="300px" height="300px" id="zadanie1"></svg>
+    <script>
+    
+      // definiujemy dane (tego mi nie ruszać!)
+      var dane = [{x: -4, r: 5},
+                  {x: -3, r: 2.5},
+                  {x: -2, r: 7},
+                  {x: -1, r: 5},
+                  {x:  0, r: 2},
+                  {x:  1, r: 1},
+                  {x:  2, r: 3},
+                  {x:  3, r: 5},
+                  {x:  4, r: 7}];
+      
+      // znajdujemy svg, w którym będziemy rysować
+      var svg = d3.select("#zadanie1");
+      
+      // dowiązujemy dane do (jescze nie istniejącje) grupy punktów
+      var punkty = svg.selectAll("circle.punkt")
+        .data(dane);
+        
+      // tworzymy punkty
+      punkty.enter()
+        .append("circle")
+          .attr("class", "punkt")
+          .attr("cx", function (d) {return 100 + 20 * d.x;})
+          .attr("cy", function (d) {return 200 - 10 * d.x * d.x;})
+          .attr("r", 5)
+          .style("fill", "red");
+            
+      punkty.transition()
+        .duration(2000)
+          .attr("cx", 2)
+          .attr("cy", 3)
+          .style("fill", "orange")
+          
+      // Zadanie 1:
+      // (do http://warsztatywww.wikidot.com/www10:wizualizujemy-wikipedie)
+      //
+      // a. ustaw średnicę kropek zależną o zmiennej 'r' w danych
+      // b. pokoloruj parzyste i nieparzyste kropki innym kolorem (zmienna 'x')
+      // c. (dodatkowe) zrób dynamiczne przejście pomiędzy
+      //                początkową wizualizacją a punktami a. i b.
+      // d. (dodatkowe) zmień 'ręczne' skalowanie (czyli np. '100 + 20 * d.x')
+      //                na korzystajće z liniowej skali (tj. d3.scale.linear())
+      //    patrz:  - https://www.dashingd3js.com/d3js-scales
+      //            - http://www.recursion.org/d3-for-mere-mortals/
+      
+      // Technikali Plunkera:
+      // - pierwsze klikamy "Fork"
+      // - potem edytujemy i zapisujemy
+      // - jak będzie dobre, przesyłamy linka do ostatecznej wersji
+      // - warto się podpisać w pliku (cobym się nie pomylił)
+      //
+      // Powodzenia
+      // życzy Piotr Migdał!
+      // :)
+      
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,41 @@
+.node {
+	fill: orange;
+	stroke-width: 1;
+	stroke: black;
+	opacity: 1;
+}
+
+.node.unselected {
+	opacity: 0.6;
+	fill: orange;
+	stroke-width: 1;
+	stroke: black;
+}
+
+.node.selected {
+	opacity: 1;
+	fill: orange;
+	stroke-width: 1;
+	stroke: black;
+}
+
+
+
+.link {
+	stroke: gray;
+	stroke-width: 1;
+}
+
+.link.unselected {
+	stroke: gray;
+	stroke-width: 1;
+	stroke: gray;
+	opacity: 0.6;
+}
+
+.link.selected {
+	stroke: gray;
+	stroke-width: 1;
+	stroke: black;
+	opacity: 1;
+}
