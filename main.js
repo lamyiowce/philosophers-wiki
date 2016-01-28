@@ -35,15 +35,17 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    	}
 		    })
 
-		var timeline = svg.append("path")
-			.attr("d", "M" + width/10 + height-margin/2 + 
-						"L" + width*0.9 + height-margin/2 +
+	/*	var timeline = svg.append("path")
+			.attr("d", "M" + (width/10) + (height-margin/2) + 
+						"L" + (width*0.9) + (height-margin/2) +
 						"L" + (width*0.9-30) + (height-margin/2+10) +
 						"L" + (width*0.9-30) + (height-margin/2-10) +
-						"L" + width*0.9 + height-margin/2)
+						"L" + (width*0.9) + (height-margin/2))
 			.attr("stroke", "black")
 			.attr("stroke-weight", 3);
-
+*/
+		var xAxis = d3.svg.axis()
+            .scale(axisScale);
 
 		var force = d3.layout.force()
 		    .size([width, height])

@@ -24,6 +24,8 @@ int trans[1000];
 int inf[1000];
 bool comp (ziom a, ziom b)
 {
+	if (a.year == b.year) 
+		return a.name < b.name;
 	return a.year < b.year;
 }
 
