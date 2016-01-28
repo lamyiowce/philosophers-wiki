@@ -17,6 +17,13 @@
 	opacity: 1;
 }
 
+.label
+{
+ // fill: black;
+  stroke-width: 0;
+  font-family: serif;
+  font-size: 12px;
+}
 
 
 .link {
@@ -30,8 +37,14 @@
 	opacity: 0.5;
 }
 
-.link.selected {
+.link.selectedout {
 	stroke-width: 2;
-	stroke: black;
+	stroke: #637939;
+	opacity: 1;
+}
+
+.link.selectedin {
+	stroke-width: 2;
+	stroke: #843c39;
 	opacity: 1;
 }

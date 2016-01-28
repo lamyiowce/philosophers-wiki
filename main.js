@@ -44,8 +44,7 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 			.attr("stroke", "black")
 			.attr("stroke-weight", 3);
 */
-		var xAxis = d3.svg.axis()
-            .scale(axisScale);
+
 
 		var force = d3.layout.force()
 		    .size([width, height])
@@ -59,10 +58,36 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    .enter().append('line')
 		    .attr('class', 'link');
 
+		var labelData = [
+			{
+				"fill": "#637939",
+				"txt": "outward influence"
+			},{
+				"fill" : "#843c39",
+				"txt": "inward influence"
+			}
+		];
+
+		var label = svg.selectAll(".label")
+			.data(labelData).enter()
+		    .append("text")
+		    .attr("x", 1170)
+		    .attr("y", function(d, i) { console.log(30 + 20*i)
+		    	return 30 + 20*i; })
+		    .attr("dy", ".35em")
+		    .attr("text-anchor", "end")
+		  	.attr("class", "label")
+		  	.style("fill", function (d) {
+		  		return d.fill;
+		  	})
+		  //  .style("font", "30 128px Helvetica Neue")
+		    .text(function (d) {
+		    	return d.txt;
+		    });
+
 		var forceStopped = 1;
 
 		var colors = d3.scale.linear()
-		//	.domain([#393b79, #9c9ede])
 			.domain([0, d3.max(nodes, function (d) { return d.inf; })])
 			.range(["#17becf", "#ffff00"]);
 
@@ -88,8 +113,10 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    		return i == j ? "node" : "node unselected";
 		    	})
 		    	link.attr("class", function (t, j) {
-		    		if (t.source.index == i || t.target.index == i)
-		    			return "link selected";
+		    		if (t.source.index == i) 
+		    			return "link selectedout";
+		    		else if (t.target.index == i)
+		    			return "link selectedin";
 		    		else
 		    			return "link unselected";
 
@@ -104,8 +131,11 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    	})
 		    })
 		    .on("dblclick", function (d) {
-		    	window.location.assign(d.wiki, '_blank');
+		    	window.open(d.wiki, '_blank');
 		    });
+
+		node.append("title")
+	    		.text( function (d) { return d.name } );
 /*
 		var xscale =  d3.scale.log()
 			.range([width*0.1, width*0.9])
@@ -115,15 +145,30 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 			.range([width*0.05, width*0.95])
 			.domain([0, 690]);
 
+	/*	var axisscale =  d3.scale.linear()
+			.range([width*0.05, width*0.95])
+			.domain([-630, 2016]);
+			
+
+		var tAxis = d3.svg.axis()
+            .scale(axisscale);
+
+        var axisGroup = svg.append("g")
+        	.call(tAxis);
+
+            typeof(tAxis);
+*/
 		force.on('tick', function () {
 			node.attr("cx", function (d, i) { 
 					return d.x=xord(i);
 				})
 				.attr("cy", function (d) { return d.y = Math.min(height-margin-Math.random(0, 8), Math.max(5+Math.random(0, 8), d.y))} )
-				.append("title")
-		    		.text( function (d) { return d.name } )
+				
 
-			 link.attr('x1', function (d) { return d.source.x; })
+			
+
+
+ link.attr('x1', function (d) { return d.source.x; })
 			 	.attr('y1', function (d) { return d.source.y; })
 			 	.attr('x2', function (d) { return d.target.x; })
 			 	.attr('y2', function (d) { return d.target.y; })
