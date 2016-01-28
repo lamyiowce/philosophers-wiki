@@ -21,7 +21,7 @@ struct ziom {
 
 ziom node[1000];
 int trans[1000];
-
+int inf[1000];
 bool comp (ziom a, ziom b)
 {
 	return a.year < b.year;
@@ -36,10 +36,9 @@ int main ()
 	ofstream output("links.tsv");
 	ofstream nodes("nodes0.tsv");
 	Value links = root["results"]["bindings"];
-	//cout << links;
 	output << "source\ttarget" << endl;
 	
-	nodes << "name\tyear" << endl;
+	nodes << "name\tyear\tinf" << endl;
 	int it = 0;
 	for (int i = 0; i < links.size(); i++)
 	{
@@ -74,10 +73,14 @@ int main ()
 	for (int i = 0; i < it; i++) 
 	{
 		trans[node[i].id] = i;
-		nodes << node[i].name << "\t" << node[i].year << endl;
 	}
 	for (auto a : s)
 	{
+		inf[trans[a.first]]++;
 		output << trans[a.first] << '\t' << trans[a.second] << endl;
+	}
+	for (int i = 0; i < it; i++) 
+	{
+		nodes << node[i].name << "\t" << node[i].year << "\t" << inf[i] << endl;
 	}
 }

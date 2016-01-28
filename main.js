@@ -1,18 +1,6 @@
-  /*
-  var svg = d3.select("body").append("svg")
-    .attr("width", 500)
-    .attr("height", 500);
-  
-  var pierwiastki = svg.selectAll(".node")
-    .data([4, 4, 4,43, 4]);
-   	
-  pierwiastki.enter()
-    .append("circle")
-      .attr("cx", function (d) { return 40 * d; })
-      .attr("cy", function (d) { return 40; })
-      .attr("r", 4);
-      */
-var nodes, links;
+var nodes, links, margin = 20;
+
+
 
 
 d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
@@ -36,11 +24,31 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		var svg = d3.select("body").append("svg")
 			.attr("width", width)
 			.attr("height", height) 
+			.on("click", function () {
+		    	if (forceStopped == 1) {
+		    		forceStopped = 0;
+		    		force.start();
+		    	}
+		    	else {
+		    		forceStopped = 1;
+		    		force.stop();
+		    	}
+		    })
+
+		var timeline = svg.append("path")
+			.attr("d", "M" + width/10 + height-margin/2 + 
+						"L" + width*0.9 + height-margin/2 +
+						"L" + (width*0.9-30) + (height-margin/2+10) +
+						"L" + (width*0.9-30) + (height-margin/2-10) +
+						"L" + width*0.9 + height-margin/2)
+			.attr("stroke", "black")
+			.attr("stroke-weight", 3);
+
 
 		var force = d3.layout.force()
 		    .size([width, height])
-			.linkDistance(0)
-			.charge(-50)
+			.linkDistance(50)
+			.charge(function(d) { return -20*d.inf;})
 		    .nodes(nodes)
 		    .links(links);
 
@@ -49,17 +57,33 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    .enter().append('line')
 		    .attr('class', 'link');
 
+		var forceStopped = 1;
+
+		var colors = d3.scale.linear()
+		//	.domain([#393b79, #9c9ede])
+			.domain([0, d3.max(nodes, function (d) { return d.inf; })])
+			.range(["#17becf", "#ffff00"]);
+
+			console.log(colors(3));
+
+		var rscale = d3.scale.linear()
+			.domain([0, d3.max(nodes, function (d) { return d.inf; })])
+			.range([3,10])
 
 		var node = svg.selectAll('.node')
 		    .data(nodes)
 		    .enter().append('circle')
 		    .attr('class', 'node')
-		    .attr('r', 4)
+		    .attr('r', function (d) { 
+		    	return rscale(d.inf);
+		    })
+		    .style("fill", function (d) {
+		    	return colors(d.inf);
 
-
+		    })
 		    .on("mouseover", function (d, i) {
 		    	node.attr("class", function (t, j) {
-		    		return i == j ? "node selected" : "node";
+		    		return i == j ? "node" : "node unselected";
 		    	})
 		    	link.attr("class", function (t, j) {
 		    		if (t.source.index == i || t.target.index == i)
@@ -68,53 +92,32 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    			return "link unselected";
 
 		    	})
-
-
-/*		    	link.each(function (t, j) {
-		    		if (t.source.index == i || t.target.index == i) {
-		    			this.attr("stroke", "black")
-		    				.attr("opacity", 1)
-		    		}
-		    		else
-		    			this.attr("opacity", 0.6)
-		    				.attr("stroke", "gray")
-
-		    	})
-		    	link.attr("opacity", function (t, j) {
-		    		console.log(t);
-		    		if (t.source.index == i || t.target.index == i)
-		    			return 1
-		    		else
-		    			return 0.6
-		    	})
-		    	link.attr("stroke", function (t, j) {
-		    		console.log(t);
-		    		if (t.source.index == i || t.target.index == i)
-		    			return "black"
-		    		else
-		    			return "gray"
-		    	})*/
-
-
 		    })
-
-
+		    .on("mouseout", function (d, i) {
+		    	node.attr("class", function () {
+		    		 return "node";
+		    	})
+		    	link.attr("class", function (t, j) {
+		    		return "link";
+		    	})
+		    })
+		    .on("dblclick", function (d) {
+		    	window.location.assign(d.wiki, '_blank');
+		    });
+/*
 		var xscale =  d3.scale.log()
 			.range([width*0.1, width*0.9])
-			.domain([10, d3.max(nodes, function(d) { return d.yearsAgo; })]);
+			.domain([10, d3.max(nodes, function(d) { return d.yearsAgo; })]);*/
 
-	/*	var yscale = d3.scale.linear()
-			.range([height*0.1, height*0.9])
-			.domain([])
-*/
+		var xord =  d3.scale.linear()
+			.range([width*0.05, width*0.95])
+			.domain([0, 690]);
+
 		force.on('tick', function () {
-
-			node.attr("cx", function (d) { 
-				//	console.log(d.year) 
-					d.x = xscale(d.yearsAgo)
-					return d.x //zmienić skalę
+			node.attr("cx", function (d, i) { 
+					return d.x=xord(i);
 				})
-				.attr("cy", function (d) { return d.y = Math.min(height, Math.max(0, d.y))} )
+				.attr("cy", function (d) { return d.y = Math.min(height-margin-Math.random(0, 8), Math.max(5+Math.random(0, 8), d.y))} )
 				.append("title")
 		    		.text( function (d) { return d.name } )
 
@@ -128,32 +131,6 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 	}
 })
 
-/*
-function draw(dane) {
-	var WID = 1200, HEI = 600;
-	var svg = d3.select("body").append("svg")
-		.attr("width", WID)
-		.attr("height", HEI) 
-
-	var	timeline = svg.append("line")
-		.attr("class", "arrow")
-	 	.attr("x1", svg.attr("width")/10)
-		.attr("x2", 0.9*svg.attr("width"))
-		.attr("y1", 0.9*svg.attr("height"))
-		.attr("y2", 0.9*svg.attr("height"))
-
-	var xscale =  d3.scale.linear()
-		.range([svg.attr("width")*0.1, svg.attr("width")*0.9])
-		.domain([-1000, 2000])
-
-	nodes.enter()
-		.append("circle")
-			.attr("class", "node")
-			.attr("cx", function(d, i) {  return xscale(d.YA) })
-			.attr("cy", function(d, i) { return 500 })
-			.attr("r", 5)
-}
-*/
 function typeLines (d) {
 	d.source = +d.source;
 	d.target = +d.target;
@@ -162,5 +139,6 @@ function typeLines (d) {
 
 function typeNodes (d) {
 	d.year = +d.year;
+	d.inf = +d.inf;
 	return d;
 }

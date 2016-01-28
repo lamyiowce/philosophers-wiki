@@ -1,5 +1,4 @@
 .node {
-	fill: orange;
 	stroke-width: 1;
 	stroke: black;
 	opacity: 1;
@@ -7,16 +6,15 @@
 
 .node.unselected {
 	opacity: 0.6;
-	fill: orange;
+
 	stroke-width: 1;
 	stroke: black;
 }
 
 .node.selected {
-	opacity: 1;
-	fill: orange;
 	stroke-width: 1;
 	stroke: black;
+	opacity: 1;
 }
 
 
@@ -29,13 +27,11 @@
 .link.unselected {
 	stroke: gray;
 	stroke-width: 1;
-	stroke: gray;
-	opacity: 0.6;
+	opacity: 0.5;
 }
 
 .link.selected {
-	stroke: gray;
-	stroke-width: 1;
+	stroke-width: 2;
 	stroke: black;
 	opacity: 1;
 }
