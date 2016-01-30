@@ -1,6 +1,8 @@
 var nodes, links, margin = 20;
 
-
+var delimData = [
+	
+]
 
 
 d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
@@ -34,17 +36,6 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    		force.stop();
 		    	}
 		    })
-
-	/*	var timeline = svg.append("path")
-			.attr("d", "M" + (width/10) + (height-margin/2) + 
-						"L" + (width*0.9) + (height-margin/2) +
-						"L" + (width*0.9-30) + (height-margin/2+10) +
-						"L" + (width*0.9-30) + (height-margin/2-10) +
-						"L" + (width*0.9) + (height-margin/2))
-			.attr("stroke", "black")
-			.attr("stroke-weight", 3);
-*/
-
 
 		var force = d3.layout.force()
 		    .size([width, height])
@@ -109,6 +100,7 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 
 		    })
 		    .on("mouseover", function (d, i) {
+		    	force.stop();
 		    	node.attr("class", function (t, j) {
 		    		return i == j ? "node" : "node unselected";
 		    	})
@@ -123,6 +115,7 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 		    	})
 		    })
 		    .on("mouseout", function (d, i) {
+		    	force.start();
 		    	node.attr("class", function () {
 		    		 return "node";
 		    	})
@@ -136,43 +129,23 @@ d3.tsv("nodes.tsv",  typeNodes, function(error, data) {
 
 		node.append("title")
 	    		.text( function (d) { return d.name } );
-/*
-		var xscale =  d3.scale.log()
-			.range([width*0.1, width*0.9])
-			.domain([10, d3.max(nodes, function(d) { return d.yearsAgo; })]);*/
 
 		var xord =  d3.scale.linear()
 			.range([width*0.05, width*0.95])
 			.domain([0, 690]);
 
-	/*	var axisscale =  d3.scale.linear()
-			.range([width*0.05, width*0.95])
-			.domain([-630, 2016]);
-			
 
-		var tAxis = d3.svg.axis()
-            .scale(axisscale);
-
-        var axisGroup = svg.append("g")
-        	.call(tAxis);
-
-            typeof(tAxis);
-*/
 		force.on('tick', function () {
 			node.attr("cx", function (d, i) { 
 					return d.x=xord(i);
 				})
-				.attr("cy", function (d) { return d.y = Math.min(height-margin-Math.random(0, 8), Math.max(5+Math.random(0, 8), d.y))} )
+				.attr("cy", function (d) { return d.y = Math.min(height-margin-Math.random(0, 8), Math.max(5+Math.random(0, 8), d.y))} );
 				
-
-			
-
-
- link.attr('x1', function (d) { return d.source.x; })
+ 			link.attr('x1', function (d) { return d.source.x; })
 			 	.attr('y1', function (d) { return d.source.y; })
 			 	.attr('x2', function (d) { return d.target.x; })
-			 	.attr('y2', function (d) { return d.target.y; })
-		})
+			 	.attr('y2', function (d) { return d.target.y; });
+		});
 
 		force.start();
 	}

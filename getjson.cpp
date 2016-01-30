@@ -32,7 +32,7 @@ bool comp (ziom a, ziom b)
 int main ()
 {
 	Value root;
-	ifstream input("sparql.json");
+	ifstream input("sparql-clean.json");
 	input >> root;
 
 	ofstream output("links.tsv");
@@ -48,8 +48,10 @@ int main ()
 	//	regex_search(links[i]["A"]["value"].asString(), a, reg);
 		//regex_replace(a, dolnik, " ");
 //		cout << "aaa" << endl;
+
 		string aname = links[i]["A"]["value"].asString();
 		string bname = links[i]["B"]["value"].asString();
+
 		if (bylo.find(aname) == bylo.end())
 		{
 			bylo[aname] = 1;
@@ -67,7 +69,11 @@ int main ()
 			node[it].id = it;
 			nums[bname] = it++;
 		} 
-		s.insert(make_pair(nums[aname], nums[bname]));
+
+		if (aname == "http://dbpedia.org/resource/Predrag_Finci" || aname == "http://dbpedia.org/resource/Jesús_Padilla_Gálvez")
+			cout << "fix "<< aname << endl, s.insert(make_pair(nums[bname], nums[aname]));
+		else
+			s.insert(make_pair(nums[aname], nums[bname]));
 //		output << nums[aname] << '\t' << nums[bname] << endl;
 	}
 //	cout << "pozdro" << endl;
